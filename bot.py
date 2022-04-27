@@ -152,6 +152,8 @@ async def on_message(ctx):
         return
 
     if ctx.content.lower() == '!roll d20':
+        # ToDo take valid dice rolls D4, D6, D8, D10, D12, D20
+        # Be able to roll multiple dice. example: !roll 2xd6
         d20result = random.randint(1,20)
         await ctx.channel.send(f'{d20result}')
 
