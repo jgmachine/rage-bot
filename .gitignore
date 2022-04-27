@@ -2,3 +2,4 @@ bot-env/**
 token.txt
 mongo-url.txt
 discord.log
+nohup.out
