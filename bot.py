@@ -151,4 +151,8 @@ async def on_message(ctx):
         await ctx.channel.send(f'Hello, {ctx.author.display_name}!')
         return
 
+    if ctx.content.lower() == '!roll d20':
+        d20result = random.randint(1,20)
+        await ctx.channel.send(f'{d20result}')
+
 client.run(token)
