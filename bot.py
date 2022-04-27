@@ -53,7 +53,7 @@ client = discord.Client()
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
-    await client.get_channel(countingChannelId).send(f"https://tenor.com/view/kool-aid-man-oh-yeah-wall-break-family-guy-gif-8149689")
+    await client.get_channel(countingChannelId).send(f"{(random.choice(list(open('spawn-gifs.txt'))))}")
     await client.get_channel(countingChannelId).send(f"I'm back! We're picking it back up at {currentCount}. Somone gimme a {currentCount}!")
 
 @client.event
