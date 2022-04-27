@@ -81,20 +81,6 @@ async def on_message(ctx):
             print('Only an admin can do that.')
             return
     
-    # Function that runs when the target number is reached
-    async def countingWinner(user):
-        collection = db["UserData"]
-        myquery = { "_id": user.id }
-        if (collection.count_documents(myquery) != 0):
-            document = collection.find_one({"_id":user.id})
-            userScore = document["score"] + 1
-            collection.update_one({"_id":user.id}, {"$set":{"score":userScore}})
-        else:
-            post = {"_id": user.id, "score": 1}
-            collection.insert_one(post)
-            userScore = 1
-        return userScore
-    
     # Check if incoming message is on Counting Channel
     if ctx.channel.id == countingChannelId: 
         # Check if the incoming message is a digit only
@@ -111,7 +97,7 @@ async def on_message(ctx):
 
                 # Proceed if the current discord user ID doesn't match lastCounter ID
                 if int(ctx.author.id) != int(lastCounter):
-                    #Make the current counter  new lastCounter
+                    #Make the current counter new lastCounter
                     lastCounter = ctx.author.id
                     collection.update_one({"_id":1}, {"$set":{"lastCounter":ctx.author.id}})
 
@@ -119,13 +105,24 @@ async def on_message(ctx):
                     if countingTarget == newNumber:
                         
                         # Target was reached, generate a new target number
-                        newTarget = random.randint(1,10)
+                        newTarget = random.randint(0,100)
                         # Write values to the db for new countTarget, reset current count to 0, and set the lastCounter id.
                         collection.update_one({"_id":1}, {"$set":{"countTarget":newTarget, "currentCount":0, "lastCounter":ctx.author.id}})
-                        score = countingWinner(ctx.author)
+                        
+                        collection = db["UserData"]
+                        myquery = { "_id": ctx.author.id }
+                        if (collection.count_documents(myquery) != 0):
+                            document = collection.find_one({"_id":ctx.author.id})
+                            userScore = document["score"] + 1
+                            collection.update_one({"_id":ctx.author.id}, {"$set":{"score":userScore}})
+                        else:
+                            post = {"_id": ctx.author.id, "score": 1}
+                            collection.insert_one(post)
+                            userScore = 1
+
                         await ctx.channel.send(f"{(random.choice(list(open('goose-gifs.txt'))))}")
                         await ctx.channel.send(f"{ctx.author.mention} Congratulations you are now the holder of the silly goose!")
-                        await ctx.channel.send(f"You have won {score} times!") # TODO - store number of wins
+                        await ctx.channel.send(f"You have won {userScore} times!") # TODO - store number of wins
                         await ctx.channel.send(f"Counting will now start over. I'm a computer - so start at 0!")
 
                         currentCount = 0
