@@ -46,12 +46,20 @@ if (collection.count_documents(myquery) != 0):
     print(f"currentCount: {currentCount}")
     print(f"countingTarget: {countingTarget}")
     print(f"lastCounter: {lastCounter}")
+#End of Counting Config
 
-async def spawnCountingBot():
+token = open("token.txt", "r").read()
+client = discord.Client()
+@client.event
+async def on_ready():
+    print(f'{client.user} has connected to Discord!')
     await client.get_channel(countingChannelId).send(f"https://tenor.com/view/kool-aid-man-oh-yeah-wall-break-family-guy-gif-8149689")
     await client.get_channel(countingChannelId).send(f"I'm back! We're picking it back up at {currentCount}. Somone gimme a {currentCount}!")
 
-async def countingBot(ctx):
+@client.event
+async def on_message(ctx): 
+    print(f"{ctx.channel}: {ctx.author}: {ctx.author.name}: {ctx.content}")
+
     ######################################
     # Start of Counting Channel Commands #
     ######################################
@@ -95,8 +103,11 @@ async def countingBot(ctx):
             
             # Check if the new number matches the currentCount Number
             if newNumber == int(currentCount):
+
+                # Log to console Discord ID of lastCounter (person who last counted a correct number)
                 print(f"lastCounter: {lastCounter}")
-                print(f"Last to count is {ctx.author.display_name}({ctx.author.id})")
+                # Log to console Discord ID of current Discord user to count
+                print(f"currentCounter: {ctx.author.display_name}({ctx.author.id})")
 
                 # Proceed if the current discord user ID doesn't match lastCounter ID
                 if int(ctx.author.id) != int(lastCounter):
@@ -138,22 +149,6 @@ async def countingBot(ctx):
                 await ctx.channel.send(f"Bleep. Bloop. Does not compute. Try again!")
                 print(f"bad. Your number: {newNumber} Current Number: {currentCount}")
                 return
-
-#End of Counting Config
-
-token = open("token.txt", "r").read()
-client = discord.Client()
-@client.event
-async def on_ready():
-    print(f'{client.user} has connected to Discord!')
-    spawnCountingBot()
-
-
-@client.event
-async def on_message(ctx): 
-    print(f"{ctx.channel}: {ctx.author}: {ctx.author.name}: {ctx.content}")
-
-    countingBot(ctx)
 
     if ctx.content.lower() == 'hello':
         await ctx.channel.send(f'Hello, {ctx.author.display_name}!')
