@@ -151,10 +151,28 @@ async def on_message(ctx):
         await ctx.channel.send(f'Hello, {ctx.author.display_name}!')
         return
 
-    if ctx.content.lower() == '!roll d20':
+    if ctx.content.lower().startswith('!roll'):
+        if ctx.content.lower() == '!roll':
+            await ctx.channel.send(f"Try d4, d6, d8, d10, d12, or d20")
+            await ctx.channel.send(f"example: !roll d20 or !roll 3xd8")
+
+        roll = ctx.content.lower().replace(" ", "")[5:]
+        d = roll.split('d',1)[1]
+        x = 1 # Default Multiplier is 1
+        if roll[0].isdigit():
+            x = roll[0]
+        if d in ('4', '6', '8', '10', '12', '20'):
+            count = 0
+            result = 0
+            while count < int(x):
+                result += random.randint(1,int(d))
+                count += 1
+            await ctx.channel.send(f'{result}')
+        else:
+            await ctx.channel.send(f"{(random.choice(list(open('rejected-gifs.txt'))))}")
+            await ctx.channel.send(f"Only d4, d6, d8, d10, d12, or d20 accepted")
+
         # ToDo take valid dice rolls D4, D6, D8, D10, D12, D20
         # Be able to roll multiple dice. example: !roll 2xd6
-        d20result = random.randint(1,20)
-        await ctx.channel.send(f'{d20result}')
 
 client.run(token)
