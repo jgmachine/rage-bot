@@ -146,6 +146,10 @@ async def on_message(ctx):
                 await ctx.channel.send(f"Bleep. Bloop. Does not compute. Try again!")
                 print(f"bad. Your number: {newNumber} Current Number: {currentCount}")
                 return
+        if ctx.content.lower().startswith('!leaderboard'):
+            # TODO - Build leaderboard command to list player scores
+                # Pull top 10 scores from DB & list player names and scores in order
+            return
 
     if ctx.content.lower() == 'hello':
         await ctx.channel.send(f'Hello, {ctx.author.display_name}!')
